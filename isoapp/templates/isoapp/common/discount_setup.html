@@ -1,0 +1,66 @@
+{% extends 'isoapp/common/index.html' %}
+{% include "isoapp/common/static_files.html" %}
+{% block title %} Discount Setup{% endblock %}
+{% block content %}
+<div class="col-10">
+    <div class="row">
+        <div class="col-md-6">
+            <strong> <i class="icon-pin"></i>Discount Setup</strong>
+        </div>
+        <div class="col-md-6 text-right">
+            <a style="text-align: right;" href="/discount-list/"> <i class="fa fa-hand-o-right"></i> Discount List</a>
+        </div>
+    </div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <table class="table table-bordered">
+           
+            <tr>
+                <th>Start Amount<span style="color: red;">*</span>  </th>
+                <td> <input type="number" name="start_amount" class="form-control" required /> </td>
+            
+                <th>End Amount <span style="color: red;">*</span> </th>
+                <td> <input type="number" name="end_amount" class="form-control" required /> </td>
+            </tr>
+            <tr>
+                <th>Discount (%) <span style="color: red;">*</span> </th>
+                <td> <input type="number" name="discount_parcentage" class="form-control" required /> </td>
+                <th>Country <span style="color: red;">*</span> </th>
+                <td>
+                    <select name="country" class="form-control" required>
+                        <option value="">-----Select-----</option>
+                        <option value="USA">USA</option>
+                        <option value="Bangladesh">Bangladesh</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Discount Month <span style="color: red;">*</span> </th>
+                <td>
+                    <select name="discount_month" class="form-control" required>
+                        <option value="">-----Select-----</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                    </select>
+                </td>
+                <th>Remarks</th>
+                <td> <textarea type="text" name="remarks" class="form-control" > </textarea> </td>
+            </tr>
+           
+            <tr>
+                <td colspan="4" style="text-align: center;"><input type="submit" name="btnSave" value="Save" class="btn btn-success" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,180 @@
+<html>
+    <head>
+        {% load staticfiles %}
+        {% include "isoapp/common/static_files.html" %}
+        <title>Invoice</title>
+        <style>
+            #invoice th {
+                background-color:#ddd;       
+            }
+            @page{
+                size:A4 portrait;
+                margin:1.2cm;
+                
+                @frame footer_frame { /* Another static Frame */
+                    -pdf-frame-content: footer_content;
+                    left: 256pt; width: 512pt; top: 1095px; height: 20pt;
+                }
+            }
+        </style>
+    </head>
+    
+    <body>
+    {% for data in service_list %}        
+    <div class='wrapper'> 
+        <tr>
+            <td>Company Logo or Name </td>
+        </tr>
+   </table>
+   <br>
+   <table style="padding-left:0px;font-size: 12px;" id="invoice">
+        <tr>
+            <td colspan="4" style="text-align: left;font-weight:bold;font-size: 14px;">Invoice</td>
+        </tr>
+        <tr>
+            <th>Invoice No :</th>
+            <td>{{sales_list.invoice_no}}</td>
+            <th>Date :</th>
+            <td>{{sales_list.added_date}}</td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <table class="table table-bordered table-stripped">
+                    <tr>
+                        <th>Product Code</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                    </tr>
+                    {% for data in sales_history_list %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{data.product_name__barcode}}</td>
+                        <td>{{data.product_name}}</td>
+                        <td>{{data.product_name__sales_price}}</td>
+                        <td>{{data.sales_quantity}}</td>
+                        <td>{{data.total_price}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <th>Payable :</th>
+            <td>{{sales_list.total_price}}</td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <th>Vat :</th>
+            <td>{{sales_list.vat_amount}}</td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <th>Discount :</th>
+            <td>{{sales_list.discount_amount}}</td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <th>Net Amount :</th>
+            <td>{{sales_list.net_price}}</td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <th>Paid Amount :</th>
+            <td>{{sales_list.paid_amount}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding-top:5px;">
+                Customer Signature: _______________________  
+            </td>
+            <td colspan="2" style="padding-top:5px;">
+                Authorized Signature: _______________________  
+            </td>
+        </tr>
+            <tr>
+                <td colspan="4"><p>
+                    .....................................................................................................................................................................................................................</p>
+                </td>
+            </tr>
+        </table>
+
+        <table style="margin-top: 20px;">
+            <tr>
+                <td>Company Logo or Name </td>
+            </tr>
+       </table>
+       <br>
+       <table style="padding-left:0px;font-size: 12px;" id="invoice">
+            <tr>
+                <td colspan="2" style="text-align: left;font-weight:bold;font-size: 14px;">Invoice</td>
+            </tr>
+            <tr>
+                <th>Invoice No :</th>
+                <td>{{sales_list.invoice_no}}</td>
+                <th>Date :</th>
+                <td>{{sales_list.added_date}}</td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <table class="table table-bordered table-stripped">
+                        <tr>
+                            <th>Product Code</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                        </tr>
+                        {% for data in sales_history_list %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{data.product_name__barcode}}</td>
+                            <td>{{data.product_name}}</td>
+                            <td>{{data.product_name__sales_price}}</td>
+                            <td>{{data.sales_quantity}}</td>
+                            <td>{{data.total_price}}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <th>Payable :</th>
+                <td>{{sales_list.total_price}}</td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <th>Vat :</th>
+                <td>{{sales_list.vat_amount}}</td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <th>Discount :</th>
+                <td>{{sales_list.discount_amount}}</td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <th>Net Amount :</th>
+                <td>{{sales_list.net_price}}</td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <th>Paid Amount :</th>
+                <td>{{sales_list.paid_amount}}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top:5px;">
+                    Customer Signature: _______________________  
+                </td>
+                <td colspan="2" style="padding-top:5px;">
+                    Authorized Signature: _______________________  
+                </td>
+            </tr>
+        </table>
+    </div>
+    {% endfor %}
+    </body>
+    
+</html>

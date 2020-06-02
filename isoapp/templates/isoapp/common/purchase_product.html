@@ -1,0 +1,47 @@
+{% extends 'isoapp/common/index.html' %}
+{% include "isoapp/common/static_files.html" %}
+{% block title %} Purchase Product {% endblock %}
+{% block content %}
+<div class="col-10 reportcard_setting">
+    <div class="row">
+        <div class="col-md-6">
+            <strong> <i class="icon-pin"></i>Purchase Product</strong>
+        </div>
+        <div class="col-md-6 text-right">
+            <a style="text-align: right;" href="/purchase-history/"> <i class="fa fa-hand-o-right"></i> Purchase History</a>
+        </div>
+    </div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <table class="table table-bordered">
+            <tr>
+                <th>Category <span style="color: red;">*</span> </th>
+                <td>
+                    <select name="product_name" id="product_name" class="form-control" required>
+                        <option value="">-----Select-----</option>
+                        {% for data in product_list %}
+                            <option value="{{ data.pk }}">{{ data.product_name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <th>Quantity <span style="color: red;">*</span>  </th>
+                <td> <input type="number" name="quantity" class="form-control" required /> </td>
+            </tr>
+            <tr>
+                <th>Remarks</th>
+                <td colspan="3"> <textarea type="text" name="remarks" class="form-control" > </textarea> </td>
+            </tr>
+           
+            <tr>
+                <td colspan="4" style="text-align: center;"><input type="submit" name="btnSave" value="Save" class="btn btn-success" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+{% endblock %}

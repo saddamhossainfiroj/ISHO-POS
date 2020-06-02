@@ -1,0 +1,376 @@
+{% extends 'isoapp/common/index.html' %}
+{% load staticfiles %}
+{% include "isoapp/common/static_files.html" %}
+{% block title %}Sales{% endblock %}
+{% block content %}
+<style>
+    table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 3px !important;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
+</style>
+<div class="col-10 reportcard_setting">
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+        <table class="table table-bordered">
+            <tr>
+                <th style="width: 120px;">Product Code <span style="color: red;">*</span>  </th>
+                <th>Name </th>
+                <th>Price <input type="hidden" id="hdn_country" value="{{request.session.country}}"> </th>
+                <th>Available QTY </th>
+                <th style="width: 120px;">Sale QTY</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td> <input type="text" name="product_code" id="product_code" class="form-control" required /> </td>
+                <td class="name" id="name"> </td>
+                <td class="price" id="price"> </td>
+                <td class="available_qty" id="available_qty"> </td>
+                <td><input type="number" name="sale_qty" id="sale_qty" class="form-control" required></td>
+                <td style="width: 150px;">
+                    <a class="btn btn-success" href="javascript:void(0);" id="add">Add</a>
+                </td>
+            </tr>
+        </table>
+
+    <form method="POST">{% csrf_token %}
+        <div class="row">
+            <div class="col-md-9">
+                <table class="table table-bordered" id="tbl_product_add">
+                    <thead>
+                      <tr>
+                        <th style="width:80px!important;">Remove</th>
+                        <th style="width:120px!important;">Product Code</th>
+                        <th>Name</th>
+                        <th style="width:100px!important;">Quantity</th>
+                        <th style="width:80px!important;">Price</th>
+                        <th style="width:100px!important;">Total Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr></tr>
+                    </tbody>
+                  </table>
+            </div>
+            <div class="col-md-3">
+                <table class="table table-bordered">
+                    <tr><th style="text-align: right!important;">Payable Amount<input type="hidden" name="hdn_payable_amount" id="hdn_payable_amount"></th></tr>
+                    <tr><td style="text-align: right!important;" class="payable_amount" id="payable_amount">0</td></tr>
+                    {% if request.session.country == "USA" %}
+                        <tr>
+                            <td style="text-align: right!important;">
+                                <strong>Vat(7%) :</strong> <input style="text-align: right!important;" type="text" name="vat" id="vat" class="form-control" readonly>
+                               <input type="hidden" name="vat_parcentage" value="7" id="vat_parcentage">
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td style="text-align: right!important;">
+                                <strong>Vat(5%) :</strong> <input style="text-align: right!important;" type="text" name="vat" id="vat" class="form-control" readonly>
+                                <input type="hidden" name="vat_parcentage" value="5" id="vat_parcentage">
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr><th style="text-align: right!important;" id="th_discount">Discount Amount</th></tr>
+                    <tr class="tr_discount_amount"><td style="text-align: right!important;"><input style="text-align: right!important;" type="number" name="discount_amount" id="discount_amount" class="form-control" readonly></td></tr>
+
+                    <tr><th style="text-align: right!important;">Net Payable Amount
+                        <input type="hidden" name="hdn_net_payable" id="hdn_net_payable">
+                    </th></tr>
+                    <tr>
+                        <td style="text-align: right!important;" class="net_payable_amount" id="net_payable_amount">0</td>
+                    </tr>
+                    
+                    <tr><th style="text-align: right!important;">Payment Type</th></tr>
+                    <tr><td>
+                        <select name="payment_type" id="payment_type" class="form-control">
+                            <option value="">----Select----</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Gift Card">Gift Card</option>
+                            <option value="Cash & Gift Card">Cash & Gift Card</option>
+                        </select>
+                    </td></tr>
+                    <tr class="cash_amount_th"><th style="text-align: right!important;">Cash Amount</th></tr>
+                    <tr class="tr_cash_amount"><td style="text-align: right!important;"><input style="text-align: right!important;" type="number" name="cash_amount" class="form-control" id="cash_amount"></td></tr>
+                    <tr class="gift_card_no_th"><th style="text-align: right!important;">Gift Card No.</th></tr>
+                    <tr class="tr_gift_card_no"><td style="text-align: right!important;"><input type="text" name="gift_card_no" id="gift_card_no" class="form-control"></td></tr>
+                    <tr class="gift_card_amount_th"><th style="text-align: right!important;">Gift Card Amount
+                        <input type="hidden" name="hdn_gift_card_amount" id="hdn_gift_card_amount" >
+                    </th></tr>
+                    <tr class="tr_gift_card_amount"><td style="text-align: right!important;" class="gift_card_amount" id="gift_card_amount">0</td></tr>
+                    <tr class="tr_total_paid"><th style="text-align: right!important;">Total Paid Amount
+                        <input type="hidden" name="hdn_total_paid" id="hdn_total_paid" >
+                    </th></tr>
+                    <tr class="tr_total_paid_amount"><td style="text-align: right!important;" class="total_paid" id="total_paid">0</td></tr>
+                   
+                    <tr>
+                        <td style="text-align: center;">
+                            <input type="submit" class="btn btn-success" value="Save">
+                            <a target="_blank" href="/invoice-print/{{invoice_no}}/" class="fa fa-print"> {{invoice_no}}</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $('.cash_amount_th').css("display", "none");
+    $('.tr_cash_amount').css("display", "none");
+    $('.gift_card_no_th').css("display", "none");
+    $('.tr_gift_card_no').css("display", "none");
+    $('.gift_card_amount_th').css("display", "none");
+    $('.tr_gift_card_amount').css("display", "none");
+    $('.tr_discount_amount').css("display", "none");
+    $('.tr_total_paid').css("display", "none");
+    $('.tr_total_paid_amount').css("display", "none");
+});
+    $(document).ready(function() {
+    
+        var sl = 0;
+        $("#add").click(function() {
+            if ($('#product_code').val() !="" &&  $('#sale_qty').val())
+            {
+                sl += 1;
+                $('#tbl_product_add').append('<tr class="child">'+
+                '<td><a href="javascript:void(0);" onclick="updatequantity('+sl+')" class="btn btn-warning btn-sm btnRemove">Remove</a></td>'+
+                '<td class="td_product_code"><input style="width:120px!important;" type="text" name="product_code" id="product_code'+sl+'" class="form-control cls_product_code" readonly ></td>'+
+                '<td class="name" id="name'+sl+'"></td>'+
+                '<td><input style="width:100px!important;" type="number" name="quantity" id="quantity'+sl+'" width="80px" class="form-control" readonly ></td>'+
+                '<td><input style="width:80px!important;" type="number" name="price" id="price'+sl+'" width="80px" class="form-control" readonly ></td>'+
+                '<td class="td_total_price"><input style="width:100px!important;" type="text" name="txt_total_price" id="txt_total_price'+sl+'" width="100px" class="form-control" readonly ></td>'+
+                '</tr>');
+                $("#product_code"+sl).val($('#product_code').val())
+                $("#name"+sl).html($('#name').html())
+                $("#quantity"+sl).val($('#sale_qty').val())
+                $("#price"+sl).val($('#price').html())
+                var total = parseInt($('#sale_qty').val())*parseInt($('#price').html())
+                $("#txt_total_price"+sl).val(total)
+                var payable = parseInt(total)+parseInt($('#payable_amount').html())
+                $('#payable_amount').html(payable)
+                $('#hdn_payable_amount').val(payable)
+
+                vat_amount = parseInt($('#payable_amount').html())*parseInt($('#vat_parcentage').val())/100
+                $('#vat').val(vat_amount)
+
+                net_payable = payable+vat_amount
+                var url = '/get-discount/';
+                $.ajax({
+                    url: url,
+                    data: {
+                        'net_payable': net_payable,
+                    },
+                    success: function (amount) {
+                        $('.tr_discount_amount').show()
+                        discount = net_payable * amount/100
+                        var discount_amount = "Discount Amount"
+                        var parcent = discount_amount+" ("+amount+"%)"
+                        $('#th_discount').html(parcent)
+                        $("#discount_amount").val(discount)
+                        $('#net_payable_amount').html(net_payable-discount)
+                        $("#hdn_net_payable").val(net_payable-discount)
+                    }
+                })
+
+                $('#product_code').val('')
+                $('#name').html('')
+                $('#price').html('')
+                $('#available_qty').html('')
+                $('#sale_qty').val('')
+            }
+            else{
+                alert("Blank row create not allow.");
+            }
+        });
+
+        $("#tbl_product_add").on('click', '.btnRemove', function(){
+            $(this).parent().parent().remove();
+        });
+    });
+
+    function updatequantity(sl){
+        var payable = parseInt($('#payable_amount').html())
+        var remove_amount = $("#txt_total_price"+sl).val()
+        payable = parseInt(payable) - parseInt(remove_amount)
+        $('#payable_amount').html(payable)
+        $('#hdn_payable_amount').val(payable)
+        vat_amount = parseInt($('#payable_amount').html())*parseInt($('#vat_parcentage').val())/100
+        $('#vat').val(vat_amount)
+        net_payable = payable+vat_amount
+        var url = '/get-discount/';
+        $.ajax({
+            url: url,
+            data: {
+                'net_payable': net_payable,
+            },
+            success: function (amount) {
+                $('.tr_discount_amount').show()
+                discount = net_payable * amount/100
+                $("#discount_amount").val(discount)
+                var discount_amount = "Discount Amount"
+                var parcent = discount_amount+" ("+amount+"%)"
+                $('#th_discount').html(parcent)
+                $('#net_payable_amount').html(net_payable-discount)
+                $("#hdn_net_payable").val(net_payable-discount)
+                if(amount == 0){
+                    $('.tr_discount_amount').css("display", "none");
+                }
+            }
+        })
+    }  
+
+    $('#product_code').focusout(function(){
+        $('#tbl_product_add .td_product_code .cls_product_code').each(function(i){
+            var product_code = parseInt($("#product_code").val())
+            if(product_code == this.value)
+            {
+                alert("This item alredy in card. If need update at first remove existing item.")
+                $("#product_code").val("")
+            }
+        });
+        var url = '{{ request.get_full_path }}';
+        $.ajax({
+            url: url,
+            data: {
+                'product_code': $('#product_code').val(),
+            },
+            success: function (data) {
+               if(data != true)
+               {
+                   var hdn_country = $("#hdn_country").val()
+                    $("#name").html(data["product"][0].product_name_id__product_name)
+                    
+                   if (hdn_country == "USA")
+                   {
+                    var url = '/convert-amount/';
+                    $.ajax({
+                        url: url,
+                        data: {
+                            'amount': data["product"][0].product_name_id__unit_sales_price,
+                        },
+                        success: function (usd) {
+                            $("#price").html(usd)
+                        }
+                    });
+                   }
+                   else{
+                        $("#price").html(data["product"][0].product_name_id__unit_sales_price)
+                   }
+                    $("#available_qty").html(data["product"][0].available_quantity)
+               }
+               else{
+                   alert("Product code is invalid.")
+               }
+            }
+        })
+    });
+
+    $('#gift_card_no').focusout(function(){
+        var url = '/get-gift-card-amount/';
+        $.ajax({
+            url: url,
+            data: {
+                'gift_card_no': $('#gift_card_no').val(),
+            },
+            success: function (amount) {
+                if(amount != 0)
+                {
+                    $("#gift_card_amount").html(amount)
+                    $("#hdn_gift_card_amount").val(amount)
+                    
+                    var cash_amount = parseInt($('#cash_amount').val())
+                    $('#total_paid').html(cash_amount+amount)
+                    $('#hdn_total_paid').val(cash_amount+amount)
+                }
+                else{
+                    alert("This card already used or invalid")
+                }
+            }
+        })
+    });
+
+
+    $('#cash_amount').mouseout(function(){
+        var payment_type = $('#payment_type').val()
+        if(payment_type == "Cash & Gift Card")
+        {
+            var cash_amount = parseInt($('#cash_amount').val())
+            var gift_card_amount = parseInt($('#gift_card_amount').html())
+            $('#total_paid').html(cash_amount+gift_card_amount)
+            $('#hdn_total_paid').val(cash_amount+gift_card_amount)
+        }
+       
+    });
+
+    $('#sale_qty').mouseout(function(){
+       var sale_qty = $('#sale_qty').val()
+       var available_qty = $('#available_qty').html()
+       if(parseInt(sale_qty) > parseInt(available_qty))
+       {
+           alert("Sale quantity not allow greater than available quantity");
+           $('#sale_qty').focus()
+           $('#sale_qty').val(0)
+           $('#add').hide()
+       }
+       else{
+        $('#add').show()
+       }
+    });
+
+    $('#payment_type').change(function(){
+       var payment_type = $('#payment_type').val()
+       if(payment_type == "Cash")
+       {
+            $('.cash_amount_th').show()
+            $('.tr_cash_amount').show()
+            $('.gift_card_no_th').css("display", "none");
+            $('.tr_gift_card_no').css("display", "none");
+            $('.gift_card_amount_th').css("display", "none");
+            $('.tr_gift_card_amount').css("display", "none");
+            $('.tr_total_paid').css("display", "none");
+            $('.tr_total_paid_amount').css("display", "none");
+       }
+       else if(payment_type == "Gift Card")
+       {
+           $('.gift_card_no_th').show()
+           $('.tr_gift_card_no').show()
+           $('.gift_card_amount_th').show()
+           $('.tr_gift_card_amount').show()
+            $('.cash_amount_th').css("display", "none");
+            $('.tr_cash_amount').css("display", "none");
+            $('.tr_total_paid').css("display", "none");
+            $('.tr_total_paid_amount').css("display", "none");
+       }
+       else if(payment_type == "Cash & Gift Card")
+       {
+           $('.cash_amount_th').show()
+           $('.tr_cash_amount').show()
+           $('.gift_card_no_th').show()
+           $('.tr_gift_card_no').show()
+           $('.gift_card_amount_th').show()
+           $('.tr_gift_card_amount').show()
+            $('.tr_total_paid').show()
+            $('.tr_total_paid_amount').show()
+       }
+       else{
+            $('.cash_amount_th').css("display", "none");
+            $('.tr_cash_amount').css("display", "none");
+            $('.gift_card_no_th').css("display", "none");
+            $('.tr_gift_card_no').css("display", "none");
+            $('.gift_card_amount_th').css("display", "none");
+            $('.tr_gift_card_amount').css("display", "none");
+            $('.tr_total_paid').css("display", "none");
+            $('.tr_total_paid_amount').css("display", "none");
+       }
+    });
+</script>
+{% endblock %}

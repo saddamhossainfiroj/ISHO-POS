@@ -1,0 +1,47 @@
+{% extends 'isoapp/common/index.html' %}
+{% include "isoapp/common/static_files.html" %}
+{% block title %} Gift Card List{% endblock %}
+{% block content %}
+
+<div class="col-10">
+    
+    <div class="row">
+        <div class="col-md-6">
+            <strong> <i class="icon-pin"></i> Gift Card List</strong>
+        </div>
+        <div class="col-md-6 text-right">
+            <a style="text-align: right;" href="/gift-card-generate/"> <i class="fa fa-plus"></i> Gift Card Generate</a>
+        </div>
+    </div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <table class="table table-bordered table-stripped">
+        <thead>
+            <tr>
+                <th>SL</th>
+                <th>Card Number</th>
+                <th>Amount</th>
+                <th>Remarks</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in gift_card_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ data.card_number }}</td>
+                    <td>{{ data.amount }}</td>
+                    <td>{{ data.remark }}</td>
+                    <td>{% if data.status == True %} <strong style="color: red;">Used</strong> {% else %} Available {% endif %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% endblock %}

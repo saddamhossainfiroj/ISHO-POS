@@ -1,0 +1,85 @@
+{% extends 'isoapp/common/index.html' %}
+{% include "isoapp/common/static_files.html" %}
+{% block title %} Sales History {% endblock %}
+{% load common_data %}
+{% block content %}
+
+<div class="col-10">
+    <div class="row">
+        <div class="col-md-6">
+            <strong> <i class="icon-pin"></i> Sales History </strong>
+        </div>
+        <div class="col-md-6 text-right">
+            <a style="text-align: right;" href="/stock-information/"> <i class="fa fa-plus"></i> Stock </a>
+        </div>
+    </div>
+    {% if request.session.country == "USA" %}
+        <div class="col-12" style="height: 500px; overflow:auto;">
+            <table class="table table-bordered table-stripped">
+                <thead>
+                    <tr>
+                        <th class="text-center">SL</th>
+                        <th>Invoice No</th>
+                        <th class="text-center">Product Code</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th class="text-center">Sales Price</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-center">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        {% for data in sales_history %}
+                            <tr>
+                                <td class="text-center">{{ forloop.counter }}</td>
+                                <td class="text-center">{{ data.invoice_no }}</td>
+                                <td class="text-center">{{ data.product_name.barcode }}</td>
+                                <td>{{ data.product_name }}</td>
+                                <td>{{ data.product_name.category_name }}</td>
+                                <td class="text-center">{{ data.product_name.unit_sales_price|convert_amount }}</td>
+                                <td class="text-center">{{ data.sales_quantity }}</td>
+                                <td class="text-center">{{ data.total_price|convert_amount }}</td>
+                            </tr>
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="col-12" style="height: 500px; overflow:auto;">
+            <table class="table table-bordered table-stripped">
+                <thead>
+                    <tr>
+                        <th class="text-center">SL</th>
+                        <th>Invoice No</th>
+                        <th class="text-center">Product Code</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th class="text-center">Sales Price</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-center">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% regroup sales_history by invoice_no as sales %}
+                    {% for invoice_no in sales %}
+                        {% for data in invoice_no.list %}
+                            <tr>
+                                {% if forloop.first %}
+                                    <td rowspan="{{forloop.parentloop.counter}}" class="text-center">{{ forloop.parentloop.counter }}</td>
+                                    <td rowspan="{{forloop.parentloop.counter}}" class="text-center">{{ data.invoice_no }}</td>
+                                {% endif %}
+                                <td class="text-center">{{ data.product_name.barcode }}</td>
+                                <td>{{ data.product_name }}</td>
+                                <td>{{ data.product_name.category_name }}</td>
+                                <td class="text-center">{{ data.product_name.unit_sales_price }}</td>
+                                <td class="text-center">{{ data.sales_quantity }}</td>
+                                <td class="text-center">{{ data.total_price }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

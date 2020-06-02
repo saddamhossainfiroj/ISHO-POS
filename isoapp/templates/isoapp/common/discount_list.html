@@ -1,0 +1,53 @@
+{% extends 'isoapp/common/index.html' %}
+{% include "isoapp/common/static_files.html" %}
+{% block title %} Discount List{% endblock %}
+{% block content %}
+
+<div class="col-10">
+    
+    <div class="row">
+        <div class="col-md-6">
+            <strong> <i class="icon-pin"></i> Discount List</strong>
+        </div>
+        <div class="col-md-6 text-right">
+            <a style="text-align: right;" href="/discount-setup/"> <i class="fa fa-plus"></i> Discount Setup</a>
+        </div>
+    </div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <table class="table table-bordered table-stripped">
+        <thead>
+            <tr>
+                <th>SL</th>
+                <th>Country</th>
+                <th>Discount Month</th>
+                <th>Start Amount</th>
+                <th>End Amount</th>
+                <th>Discount (%)</th>
+                <th>Remarks</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in discount_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ data.store_country }}</td>
+                    <td>{{ data.get_discount_month_display }}</td>
+                    <td>{{ data.start_amount }}</td>
+                    <td>{{ data.end_amount }}</td>
+                    <td>{{ data.discount_parcentage }}</td>
+                    <td>{{ data.remark }}</td>
+                    <td>{% if data.status == True %} Active {% else %}<strong style="color: red;">Inactive</strong>  {% endif %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% endblock %}

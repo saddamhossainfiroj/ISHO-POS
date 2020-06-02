@@ -1,0 +1,52 @@
+{% extends 'isoapp/common/index.html' %}
+{% include "isoapp/common/static_files.html" %}
+{% block title %} Product List {% endblock %}
+{% block content %}
+
+<div class="col-10">
+    <div class="row">
+        <div class="col-md-6">
+            <strong> <i class="icon-pin"></i> User List</strong>
+        </div>
+        <div class="col-md-6 text-right">
+            <a style="text-align: right;" href="/product-setup/"> <i class="fa fa-plus"></i> Product Setup</a>
+        </div>
+    </div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <table class="table table-bordered table-stripped">
+        <thead>
+            <tr>
+                <th class="text-center">SL</th>
+                <th class="text-center">Product Code</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th class="text-center">Purchase Price</th>
+                <th class="text-center">Sales Price</th>
+                <th>Remarks</th>
+                <th>Added Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in product_list %}
+                <tr>
+                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td class="text-center">{{ data.barcode }}</td>
+                    <td>{{ data.product_name }}</td>
+                    <td>{{ data.category_name }}</td>
+                    <td class="text-center">{{ data.bdt_unit_price }}</td>
+                    <td class="text-center">{{ data.unit_sales_price }}</td>
+                    <td>{{ data.remark }}</td>
+                    <td>{{ data.added_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% endblock %}

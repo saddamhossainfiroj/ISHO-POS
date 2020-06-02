@@ -1,0 +1,76 @@
+{% extends 'isoapp/common/index.html' %}
+{% include "isoapp/common/static_files.html" %}
+{% block title %} User Add {% endblock %}
+{% block content %}
+<style>
+    .reportcard_setting table tr td input[type="checkbox"]{
+    width:20px;height:20px;
+}
+</style>
+<div class="col-10 reportcard_setting">
+    <div class="row">
+        <div class="col-md-6">
+            <strong> <i class="icon-pin"></i>Add User</strong>
+        </div>
+        <div class="col-md-6 text-right">
+            <a style="text-align: right;" href="/user-list/"> <i class="fa fa-hand-o-right"></i> User List</a>
+        </div>
+    </div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <table class="table table-bordered">
+           
+            <tr>
+                <th>User Name <span style="color: red;">*</span>  </th>
+                <td> <input type="text" name="user_name" class="form-control" required /> </td>
+            
+                <th>Country <span style="color: red;">*</span> </th>
+                <td>
+                    <select name="user_country" id="user_country" class="form-control" required>
+                        <option value="">-----Select-----</option>
+                        <option value="Bangladesh">Bangladesh</option>
+                        <option value="USA">USA</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Full Name <span style="color: red;">*</span>  </th>
+                <td> <input type="text" name="full_name" class="form-control" required /> </td>
+            
+                <th>Mobile <span style="color: red;">*</span> </th>
+                <td> <input type="text" name="user_mobile" class="form-control" required /> </td>
+            </tr>
+            <tr>
+                <th>Email </th>
+                <td> <input type="email" name="user_email" class="form-control" /> </td>
+                <th>Address</th>
+                <td> <textarea type="text" name="address" rows="4" class="form-control" > </textarea> </td>
+            </tr>
+           
+            <tr>
+                <td colspan="4" style="text-align: center;"><input type="submit" name="btnSave" value="Save" class="btn btn-success" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+{% endblock %}
+<script type="text/javascript">
+    $("#confirm_user_password").change(function() {
+        var user_pass = $("#user_pass").val();
+        var confirm_user_password = $("#confirm_user_password").val();
+        if(user_pass != confirm_user_password)
+        {
+            alert("Confirm password not match. please try again.")
+            $("#confirm_user_password").focus()
+            $("#confirm_user_password").select()
+        }
+       
+    });
+
+</script> 

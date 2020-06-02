@@ -1,0 +1,48 @@
+{% extends 'isoapp/common/index.html' %}
+{% include "isoapp/common/static_files.html" %}
+{% block title %} User List {% endblock %}
+{% block content %}
+
+<div class="col-10">
+    <div class="row">
+        <div class="col-md-6">
+            <strong> <i class="icon-pin"></i> User List</strong>
+        </div>
+        <div class="col-md-6 text-right">
+            <a style="text-align: right;" href="/user-add/"> <i class="fa fa-plus"></i> User Add</a>
+        </div>
+    </div>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <table class="table table-bordered table-stripped">
+        <thead>
+            <tr>
+                <th>SL</th>
+                <th>User Name</th>
+                <th>Full Name</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in user_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ data.user_name }}</td>
+                    <td>{{ data.full_name }}</td>
+                    <td>{{ data.user_mobile }}</td>
+                    <td>{{ data.user_email }}</td>
+                    <td>{{ data.user_country }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% endblock %}

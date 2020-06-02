@@ -1,0 +1,12 @@
+admin user
+user = admin
+pass = admin123
+
+two sales user
+1. rocky
+	user = rocky
+	pass = rocky
+
+2. sakil
+	user = sakil
+	pass = sakil
